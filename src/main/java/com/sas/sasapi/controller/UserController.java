@@ -33,12 +33,14 @@ public class UserController {
 
     @PutMapping("/update")
     public ResponseEntity<User> updateUser(@RequestBody User user){
-        User userObj = userRepository.findById(user.getUsername()).orElseThrow(() -> new ResourceNotFound("Cannot find user in db"));
+        User userObj = userRepository.findByUserId(user.getUserId()).orElseThrow(() -> new ResourceNotFound("Cannot find user in db"));
 
         userObj.setUsername(user.getUsername());
         userObj.setPassword(user.getPassword());
+        userObj.setName(user.getName());
         userObj.setRole(user.getRole());
         userObj.setAddress(user.getAddress());
+        userObj.setEmailId(user.getEmailId());
 
         User updatedUser = userRepository.save(userObj);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
@@ -47,7 +49,7 @@ public class UserController {
     @DeleteMapping("/delete")
     public ResponseEntity<User> deleteUser(@RequestBody User user){
 
-        User userObj = userRepository.findById(user.getUsername()).orElseThrow(() -> new ResourceNotFound("Cannot find user in db"));
+        User userObj = userRepository.findByUserId(user.getUserId()).orElseThrow(() -> new ResourceNotFound("Cannot find user in db"));
         userRepository.delete(userObj);
         return new ResponseEntity<>(userObj,HttpStatus.OK);
 

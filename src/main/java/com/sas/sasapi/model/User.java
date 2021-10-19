@@ -1,65 +1,53 @@
 package com.sas.sasapi.model;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user", schema = "public")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Table(
+        name = "user",
+        schema = "public",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                name = "username_unique",
+                columnNames = "username"
+                ),
+                @UniqueConstraint(
+                name = "email_id_unique",
+                columnNames = "email_id"
+                )
+        }
+)
 public class User {
     @Id
+    @SequenceGenerator(
+            name="user_sequence",
+            sequenceName = "user_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_sequence"
+    )
+    @Column(
+            name = "user_id"
+    )
+    private Long userId;
+    private String name;
     private String username;
     private String password;
     private String role;
+    @Column(
+            name = "email_id"
+    )
+    private String emailId;
     private String address;
-
-    public User() {
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", role='" + role + '\'' +
-                ", address='" + address + '\'' +
-                '}';
-    }
-
-    public User(String username, String password, String role, String address) {
-        this.username = username;
-        this.password = password;
-        this.role = role;
-        this.address = address;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
 }
