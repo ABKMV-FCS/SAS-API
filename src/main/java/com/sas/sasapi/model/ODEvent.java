@@ -49,7 +49,8 @@ public class ODEvent {
     private String description;
     @ManyToOne
     @JoinColumn(
-            name = "user_id"
+            name = "user_id",
+            referencedColumnName = "user_id"
     )
     private User user;
 }

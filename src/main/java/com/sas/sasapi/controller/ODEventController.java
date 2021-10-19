@@ -2,7 +2,6 @@ package com.sas.sasapi.controller;
 import com.sas.sasapi.exception.ResourceNotFound;
 import com.sas.sasapi.model.ODEvent;
 import com.sas.sasapi.repository.ODEventRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
