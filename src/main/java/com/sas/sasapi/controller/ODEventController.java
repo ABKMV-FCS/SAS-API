@@ -30,7 +30,7 @@ public class ODEventController {
 
     @PutMapping("/update")
     public ResponseEntity<ODEvent> updateODEvent(@RequestBody ODEvent odEvent){
-        ODEvent odEventObj = odEventRepository.findByEventId(odEvent.getEventId()).orElseThrow(() -> new ResourceNotFound("Cannot find odEvent in db"));
+        ODEvent odEventObj = odEventRepository.findByOdEventId(odEvent.getOdEventId()).orElseThrow(() -> new ResourceNotFound("Cannot find odEvent in db"));
 
         odEventObj.setEventName(odEvent.getEventName());
         odEventObj.setDescription(odEvent.getDescription());
@@ -45,7 +45,7 @@ public class ODEventController {
     @DeleteMapping("/delete")
     public ResponseEntity<ODEvent> deleteODEvent(@RequestBody ODEvent odEvent){
 
-        ODEvent odEventObj = odEventRepository.findByEventId(odEvent.getEventId()).orElseThrow(() -> new ResourceNotFound("Cannot find odEvent in db"));
+        ODEvent odEventObj = odEventRepository.findByOdEventId(odEvent.getOdEventId()).orElseThrow(() -> new ResourceNotFound("Cannot find odEvent in db"));
         odEventRepository.delete(odEventObj);
         return new ResponseEntity<>(odEventObj,HttpStatus.OK);
 

@@ -31,9 +31,9 @@ public class ODEvent {
             generator = "odevent_sequence"
     )
     @Column(
-            name = "event_id"
+            name = "od_event_id"
     )
-    private Long eventId;
+    private Long odEventId;
     @Column(
             name = "from_date"
     )
