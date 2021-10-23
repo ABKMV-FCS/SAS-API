@@ -38,9 +38,9 @@ public class UserController {
         userObj.setUsername(user.getUsername());
         userObj.setPassword(user.getPassword());
         userObj.setName(user.getName());
-        userObj.setRole(user.getRole());
+        userObj.setRoles(user.getRoles());
         userObj.setAddress(user.getAddress());
-        userObj.setEmailId(user.getEmailId());
+        userObj.setEmail(user.getEmail());
 
         User updatedUser = userRepository.save(userObj);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);

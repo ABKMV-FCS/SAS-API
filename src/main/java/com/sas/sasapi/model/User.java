@@ -1,11 +1,10 @@
 package com.sas.sasapi.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Data
@@ -21,8 +20,8 @@ import javax.persistence.*;
                 columnNames = "username"
                 ),
                 @UniqueConstraint(
-                name = "email_id_unique",
-                columnNames = "email_id"
+                name = "email_unique",
+                columnNames = "email"
                 )
         }
 )
@@ -44,10 +43,25 @@ public class User {
     private String name;
     private String username;
     private String password;
-    private String role;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(	name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @Getter
+    @Setter
+    private Set<Role> roles = new HashSet<>();
     @Column(
-            name = "email_id"
+            name = "email"
     )
-    private String emailId;
+    private String email;
     private String address;
+
+    public User(String name, String username, String password, String email, String address) {
+        this.name=name;
+        this.username=username;
+        this.password=password;
+        this.email=email;
+        this.address=address;
+    }
 }
