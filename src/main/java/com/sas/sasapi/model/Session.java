@@ -28,7 +28,9 @@ public class Session {
     )
     @Column(name = "session_id")
     private Long sessionId;
-    @ManyToOne()
+    @ManyToOne(
+            cascade = CascadeType.REMOVE
+    )
     @JoinColumn(
             name = "course_batch_id",
             referencedColumnName = "course_batch_id"

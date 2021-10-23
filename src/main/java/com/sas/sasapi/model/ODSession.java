@@ -30,13 +30,17 @@ public class ODSession {
             generator = "od_session_sequence"
     )
     private Long odSessionId;
-    @ManyToOne
+    @ManyToOne(
+            cascade = CascadeType.REMOVE
+    )
     @JoinColumn(
             name = "session_id",
             referencedColumnName = "session_id"
     )
     private Session session;
-    @ManyToOne
+    @ManyToOne(
+            cascade = CascadeType.REMOVE
+    )
     @JoinColumn(
             name = "od_assignment_id",
             referencedColumnName = "odAssignmentId"

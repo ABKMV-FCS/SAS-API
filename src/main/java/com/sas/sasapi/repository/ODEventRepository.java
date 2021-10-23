@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface ODEventRepository extends JpaRepository<ODEvent, String> {
-    public Optional<ODEvent> findByOdEventId(Long eventID);
+    Optional<ODEvent> findByOdEventId(Long eventID);
 }

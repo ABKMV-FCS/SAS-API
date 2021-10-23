@@ -35,7 +35,9 @@ public class FacultyAssignment {
     private Long facultyAssignmentId;
 
 
-    @ManyToOne()
+    @ManyToOne(
+            cascade = CascadeType.REMOVE
+    )
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "user_id"
@@ -43,7 +45,9 @@ public class FacultyAssignment {
     private User user;
 
 
-    @ManyToOne()
+    @ManyToOne(
+            cascade = CascadeType.REMOVE
+    )
     @JoinColumn(
             name = "course_batch_id",
             referencedColumnName = "course_batch_id"

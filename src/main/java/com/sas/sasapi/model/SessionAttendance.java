@@ -33,14 +33,18 @@ public class SessionAttendance {
     )
     @Column(name = "session_attendance_id")
     private Long sessionAttendanceId;
-    @ManyToOne()
+    @ManyToOne(
+            cascade = CascadeType.REMOVE
+    )
     @JoinColumn(
             name = "session_id",
             referencedColumnName = "session_id"
     )
     private Session session;
 
-    @ManyToOne()
+    @ManyToOne(
+            cascade = CascadeType.REMOVE
+    )
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "user_id"

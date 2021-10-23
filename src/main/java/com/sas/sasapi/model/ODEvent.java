@@ -47,7 +47,9 @@ public class ODEvent {
     )
     private String eventName;
     private String description;
-    @ManyToOne
+    @ManyToOne(
+            cascade = CascadeType.REMOVE
+    )
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "user_id"

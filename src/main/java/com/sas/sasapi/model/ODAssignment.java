@@ -30,13 +30,17 @@ public class ODAssignment {
             generator = "od_assignment_sequence"
     )
     private Long odAssignmentId;
-    @ManyToOne
+    @ManyToOne(
+            cascade = CascadeType.REMOVE
+    )
     @JoinColumn(
             name = "od_event_id",
             referencedColumnName = "od_event_id"
     )
     private ODEvent odEvent;
-    @ManyToOne
+    @ManyToOne(
+            cascade = CascadeType.REMOVE
+    )
     @JoinColumn(
             name = "user_id",
             referencedColumnName = "user_id"
