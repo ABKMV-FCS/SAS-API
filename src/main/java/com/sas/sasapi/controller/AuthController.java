@@ -150,7 +150,7 @@ public class AuthController {
             String jwt= jwtUtils.generateJwtTokenFromUsername(user.getUsername(),600000);
 //            send jwt to email
             emailService.sendMail(emailRequest.getEmail(), "SAS Application Password Reset", "Click on this url to reset your password: "+url+"/resetpassword?token="+jwt);
-            return ResponseEntity.ok("Further instructions to reset password are sent to mail!");
+            return ResponseEntity.ok(new MessageResponse("Further instructions to reset password are sent to mail!"));
         }catch (Exception e){
             return (ResponseEntity<?>) ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
