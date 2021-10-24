@@ -60,7 +60,7 @@ public class AuthController {
     private  EmailService emailService;
 
 
-    @Value("${sas.app.url}")
+    @Value("${sas.app.fe_url}")
     private String url;
 
     @PostMapping("/signin")
