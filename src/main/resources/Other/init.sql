@@ -7,6 +7,6 @@ GRANT ALL ON SCHEMA public TO yourusername;
 
 -- start application to create tables
 
-INSERT INTO roles(name) VALUES('ROLE_FACULTY');
-INSERT INTO roles(name) VALUES('ROLE_STUDENT');
-INSERT INTO roles(name) VALUES('ROLE_ADMIN');
+INSERT INTO public.roles(name) VALUES('ROLE_FACULTY');
+INSERT INTO public.roles(name) VALUES('ROLE_STUDENT');
+INSERT INTO public.roles(name) VALUES('ROLE_ADMIN');

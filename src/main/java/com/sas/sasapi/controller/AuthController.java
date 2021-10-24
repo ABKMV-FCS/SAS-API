@@ -2,11 +2,15 @@ package com.sas.sasapi.controller;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 
+import com.sas.sasapi.payload.request.EmailRequest;
+import com.sas.sasapi.security.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -51,6 +55,13 @@ public class AuthController {
 
     @Autowired
     JwtUtils jwtUtils;
+
+    @Autowired
+    private  EmailService emailService;
+
+
+    @Value("${sas.app.url}")
+    private String url;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -125,5 +136,24 @@ public class AuthController {
         userRepository.save(user);
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+    }
+
+    @PostMapping("/forgotpassword")
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody EmailRequest emailRequest) {
+
+
+        try {
+            User user=userRepository.findByEmail(emailRequest.getEmail());
+            if(user==null){
+                throw new RuntimeException("Couldn't find user with such email!");
+            }
+            String jwt= jwtUtils.generateJwtTokenFromUsername(user.getUsername(),600000);
+//            send jwt to email
+            emailService.sendMail(emailRequest.getEmail(), "SAS Application Password Reset", "Click on this url to reset your password: "+url+"/resetpassword?token="+jwt);
+            return ResponseEntity.ok("Further instructions to reset password are sent to mail!");
+        }catch (Exception e){
+            return (ResponseEntity<?>) ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 }
