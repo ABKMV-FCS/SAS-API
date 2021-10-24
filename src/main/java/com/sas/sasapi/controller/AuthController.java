@@ -152,7 +152,7 @@ public class AuthController {
             emailService.sendMail(emailRequest.getEmail(), "SAS Application Password Reset", "Click on this url to reset your password: "+url+"/resetpassword?token="+jwt);
             return ResponseEntity.ok("Further instructions to reset password are sent to mail!");
         }catch (Exception e){
-            return (ResponseEntity<?>) ResponseEntity.badRequest().body(e.getMessage());
+            return (ResponseEntity<?>) ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
         }
 
     }
