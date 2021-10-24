@@ -46,4 +46,5 @@ public class ODSession {
             referencedColumnName = "odAssignmentId"
     )
     private ODAssignment odAssignment;
+    private String status;
 }
