@@ -41,7 +41,7 @@ public class CourseYear {
             referencedColumnName = "course_id"
     )
     private Course course;
-    private Integer semester;
-    private Integer year;
+    private Long semester;
+    private Long year;
 
 }

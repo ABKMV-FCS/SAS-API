@@ -5,14 +5,9 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
-public class LoginRequest {
+public class DeleteSessionDetailsRequest {
     @NotBlank
     @Getter
     @Setter
-    private String username;
-
-    @NotBlank
-    @Getter
-    @Setter
-    private String password;
+    private Long sessionId;
 }
