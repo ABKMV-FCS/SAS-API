@@ -48,7 +48,8 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     @Query("select count(s) from Session s where s.sessionId=?1")
     Long getSessionCount(Long sessionId);
 
-
+    @Query("select count(s) from Session s where s.courseBatch.courseYear.course.courseCode = ?1")
+    Long getCourseCodeCountByCourseCode(String courseCode);
 
 
 

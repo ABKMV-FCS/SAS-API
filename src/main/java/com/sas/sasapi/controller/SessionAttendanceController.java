@@ -1,9 +1,14 @@
 package com.sas.sasapi.controller;
 import com.sas.sasapi.exception.ResourceNotFound;
 import com.sas.sasapi.model.SessionAttendance;
+import com.sas.sasapi.payload.response.GetStudentAttendanceResponse;
 import com.sas.sasapi.repository.SessionAttendanceRepository;
+import com.sas.sasapi.repository.SessionRepository;
+import com.sas.sasapi.service.SessionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,9 +18,10 @@ import java.util.List;
 @RequestMapping("/api/session_attendance")
 public class SessionAttendanceController {
     private final SessionAttendanceRepository sessionAttendanceRepository;
-
-    public SessionAttendanceController(SessionAttendanceRepository sessionAttendanceRepository) {
+    private final SessionService sessionService;
+    public SessionAttendanceController(SessionAttendanceRepository sessionAttendanceRepository, SessionService sessionService) {
         this.sessionAttendanceRepository = sessionAttendanceRepository;
+        this.sessionService = sessionService;
     }
 
     @GetMapping("/all")
@@ -46,6 +52,15 @@ public class SessionAttendanceController {
         SessionAttendance sessionAttendanceObj = sessionAttendanceRepository.findBySessionAttendanceId(sessionAttendance.getSessionAttendanceId()).orElseThrow(() -> new ResourceNotFound("Cannot find sessionAttendance in db"));
         sessionAttendanceRepository.delete(sessionAttendanceObj);
         return new ResponseEntity<>(sessionAttendanceObj,HttpStatus.OK);
+
+    }
+
+    @GetMapping("/getStudentAttendance")
+    public ResponseEntity<GetStudentAttendanceResponse> getStudentAttendance(){
+
+        GetStudentAttendanceResponse gs = sessionService.getStudentAttendance();
+
+        return new ResponseEntity<>(gs,HttpStatus.OK);
 
     }
 }

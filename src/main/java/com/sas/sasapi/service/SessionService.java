@@ -6,6 +6,7 @@ import com.sas.sasapi.model.Session;
 import com.sas.sasapi.model.SessionAttendance;
 import com.sas.sasapi.payload.request.DeleteSessionDetailsRequest;
 import com.sas.sasapi.payload.request.UpdateSessionDetailsRequest;
+import com.sas.sasapi.payload.response.GetStudentAttendanceResponse;
 import com.sas.sasapi.repository.ODSessionRepository;
 import com.sas.sasapi.repository.SessionAttendanceRepository;
 import com.sas.sasapi.repository.SessionRepository;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,5 +56,22 @@ public class SessionService {
         sessionAttendanceRepository.deleteSessionAttendanceBySessionId(deleteSessionDetailsRequest.getSessionId());
         sessionRepository.deleteBySessionId(deleteSessionDetailsRequest.getSessionId());
         return new ResponseEntity<>(sessionObj,HttpStatus.OK);
+    }
+
+    public GetStudentAttendanceResponse getStudentAttendance(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder. getContext(). getAuthentication().getPrincipal();
+        String username = userDetails. getUsername();
+
+        List<String> cc = sessionAttendanceRepository.getCourseCodesByUsername(username);
+
+        List<Long> sessions = new ArrayList<Long>();
+        List<Long> attendedSessions = new ArrayList<Long>();
+
+        for (int i = 0; i < cc.size(); i++) {
+            sessions.add(sessionRepository.getCourseCodeCountByCourseCode(cc.get(i)));
+            attendedSessions.add(sessionAttendanceRepository.getCourseCodeAttendedCountByCourseCodeAndUsername(cc.get(i),username));
+        }
+        GetStudentAttendanceResponse gs = GetStudentAttendanceResponse.builder().cc(cc).attendedSessions(attendedSessions).sessions(sessions).build();
+        return gs;
     }
 }

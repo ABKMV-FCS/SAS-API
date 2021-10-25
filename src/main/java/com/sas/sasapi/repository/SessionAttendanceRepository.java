@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface SessionAttendanceRepository extends JpaRepository<SessionAttendance, Long> {
@@ -16,4 +17,9 @@ public interface SessionAttendanceRepository extends JpaRepository<SessionAttend
     @Query("DELETE FROM SessionAttendance WHERE session.sessionId=?1")
     void deleteSessionAttendanceBySessionId(Long sessionId);
 
+    @Query("select distinct c.courseBatch.courseYear.course.courseCode from CourseAllocation c where c.user.username=?1")
+    List<String> getCourseCodesByUsername(String username);
+
+    @Query("select count(s) from SessionAttendance s where s.session.courseBatch.courseYear.course.courseCode = ?1 and s.user.username=?2")
+    Long getCourseCodeAttendedCountByCourseCodeAndUsername(String courseCode,String username);
 }
