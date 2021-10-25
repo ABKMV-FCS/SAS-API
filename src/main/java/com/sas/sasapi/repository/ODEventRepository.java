@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface ODEventRepository extends JpaRepository<ODEvent, String> {
     Optional<ODEvent> findByOdEventId(Long eventID);
+
+    Optional<ODEvent> findByEventName(String eventName);
 }

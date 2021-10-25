@@ -46,10 +46,11 @@ public class ODSessionController {
         odSessionObj.setSession(odSession.getSession());
         odSessionObj.setOdSessionId(odSession.getOdSessionId());
         odSessionObj.setOdAssignment(odSession.getOdAssignment());
-
+        odSessionObj.setStatus(odSession.getStatus());
         ODSession updatedODSession = odSessionRepository.save(odSessionObj);
         return new ResponseEntity<>(updatedODSession, HttpStatus.OK);
     }
+
 
     @DeleteMapping("/delete")
     public ResponseEntity<ODSession> deleteODSession(@RequestBody ODSession odSession){
