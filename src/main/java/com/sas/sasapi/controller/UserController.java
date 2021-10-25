@@ -3,6 +3,7 @@ package com.sas.sasapi.controller;
 import com.sas.sasapi.exception.ResourceNotFound;
 import com.sas.sasapi.model.User;
 import com.sas.sasapi.payload.request.PasswordRequest;
+import com.sas.sasapi.payload.request.UseridRequest;
 import com.sas.sasapi.payload.response.MessageResponse;
 import com.sas.sasapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -34,6 +36,11 @@ public class UserController {
     @GetMapping("/all")
     public List<User> getAllUsers(){
         return userRepository.findAll();
+    }
+
+    @PostMapping("/findone")
+    public User findOneUser(@RequestBody UseridRequest useridRequest){
+        return userRepository.findByUserId(useridRequest.getUserId()).orElseThrow(() -> new ResourceNotFound("Cannot find user in db"));
     }
 
     @PostMapping("/create")
