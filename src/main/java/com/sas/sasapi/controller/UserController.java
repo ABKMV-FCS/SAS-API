@@ -95,6 +95,7 @@ public class UserController {
         return new ResponseEntity<>(service.deleteFile(fileName), HttpStatus.OK);
     }
 
+    @Transactional
     @DeleteMapping("/delete")
     public ResponseEntity<User> deleteUser(@RequestBody User user){
 

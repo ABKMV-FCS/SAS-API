@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/session_attendance")
 public class SessionAttendanceController {
@@ -46,7 +46,7 @@ public class SessionAttendanceController {
         SessionAttendance updatedSessionAttendance = sessionAttendanceRepository.save(sessionAttendanceObj);
         return new ResponseEntity<>(updatedSessionAttendance, HttpStatus.OK);
     }
-@Transactional
+    @Transactional
     @DeleteMapping("/delete")
     public ResponseEntity<SessionAttendance> deleteSessionAttendance(@RequestBody SessionAttendance sessionAttendance){
 
@@ -60,7 +60,6 @@ public class SessionAttendanceController {
     public ResponseEntity<GetStudentAttendanceResponse> getStudentAttendance(){
 
         GetStudentAttendanceResponse gs = sessionService.getStudentAttendance();
-
         return new ResponseEntity<>(gs,HttpStatus.OK);
 
     }

@@ -1,22 +1,34 @@
 package com.sas.sasapi.controller;
 import com.sas.sasapi.exception.ResourceNotFound;
 import com.sas.sasapi.model.ODAssignment;
+import com.sas.sasapi.model.ODEvent;
+import com.sas.sasapi.model.User;
+import com.sas.sasapi.payload.request.BulkODUpdateRequest;
 import com.sas.sasapi.repository.ODAssignmentRepository;
+import com.sas.sasapi.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/odassignment")
 public class ODAssignmentController {
+    @Autowired
     private final ODAssignmentRepository odAssignmentRepository;
 
-    public ODAssignmentController(ODAssignmentRepository odAssignmentRepository) {
+    @Autowired
+    private final UserRepository userRepository;
+
+    public ODAssignmentController(ODAssignmentRepository odAssignmentRepository, UserRepository userRepository) {
         this.odAssignmentRepository = odAssignmentRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/all")
@@ -48,6 +60,26 @@ public class ODAssignmentController {
         ODAssignment odAssignmentObj = odAssignmentRepository.findByOdAssignmentId(odAssignment.getOdAssignmentId()).orElseThrow(() -> new ResourceNotFound("Cannot find odAssignment in db"));
         odAssignmentRepository.delete(odAssignmentObj);
         return new ResponseEntity<>(odAssignmentObj,HttpStatus.OK);
+
+    }
+
+    @PostMapping("/bulkODListDownload")
+    public ResponseEntity<List<String>> bulkODListDownload(@RequestBody ODEvent odEvent){
+        return new ResponseEntity<List<String>>(odAssignmentRepository.getODStudentsList(odEvent),HttpStatus.OK);
+    }
+
+    @Transactional
+    @PostMapping("/bulkODListUpdate")
+    public ResponseEntity<?> bulkODListUpdate(@RequestBody BulkODUpdateRequest bulkODUpdateRequest){
+        odAssignmentRepository.deleteAllByODEvent(bulkODUpdateRequest.getOdEvent());
+        List<ODAssignment> odAssignments=new ArrayList<>();
+        for(String username: (bulkODUpdateRequest.getUsernames())){
+            User user=(User) userRepository.findByUsername(username)
+                    .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+            odAssignments.add(new ODAssignment(bulkODUpdateRequest.getOdEvent(),user));
+        }
+        odAssignmentRepository.saveAll(odAssignments);
+        return new ResponseEntity<String>("Update Successfully!",HttpStatus.OK);
 
     }
 }
