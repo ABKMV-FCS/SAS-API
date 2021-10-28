@@ -33,7 +33,6 @@ public class CourseBatch {
     @Column(name = "course_batch_id")
     private Long courseBatchId;
     @ManyToOne(
-            cascade = CascadeType.REMOVE
     )
     @JoinColumn(
             name = "course_year_id",

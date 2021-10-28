@@ -36,7 +36,6 @@ public class FacultyAssignment {
 
 
     @ManyToOne(
-            cascade = CascadeType.REMOVE
     )
     @JoinColumn(
             name = "user_id",
@@ -46,7 +45,6 @@ public class FacultyAssignment {
 
 
     @ManyToOne(
-            cascade = CascadeType.REMOVE
     )
     @JoinColumn(
             name = "course_batch_id",

@@ -42,7 +42,6 @@ public class CourseAllocation {
     private User user;
 
     @ManyToOne(
-            cascade = CascadeType.REMOVE
     )
     @JoinColumn(
             name = "course_batch_id",

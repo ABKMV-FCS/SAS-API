@@ -31,7 +31,6 @@ public class ODSession {
     )
     private Long odSessionId;
     @ManyToOne(
-            cascade = CascadeType.REMOVE
     )
     @JoinColumn(
             name = "session_id",
@@ -39,7 +38,6 @@ public class ODSession {
     )
     private Session session;
     @ManyToOne(
-            cascade = CascadeType.REMOVE
     )
     @JoinColumn(
             name = "od_assignment_id",
