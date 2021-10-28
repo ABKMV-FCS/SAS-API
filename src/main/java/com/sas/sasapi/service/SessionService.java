@@ -19,9 +19,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service("SessionService")
 public class SessionService {
@@ -31,6 +30,7 @@ public class SessionService {
     private SessionAttendanceRepository sessionAttendanceRepository;
     @Autowired
     private ODSessionRepository odSessionRepository;
+
 
     public List<SessionAttendance> updateSessionDetails(UpdateSessionDetailsRequest updateSessionDetailsRequest){
         Long count = sessionRepository.getSessionCount(updateSessionDetailsRequest.getSession().getSessionId());
@@ -63,14 +63,26 @@ public class SessionService {
         String username = userDetails. getUsername();
 
         List<String> cc = sessionAttendanceRepository.getCourseCodesByUsername(username);
+        System.out.println("username = " + username);
+        System.out.println("cc = " + cc);
 
         List<Long> sessions = new ArrayList<Long>();
-        List<Long> attendedSessions = new ArrayList<Long>();
+        List<Integer> attendedSessions = new ArrayList<Integer>();
 
+
+        HashSet<Long> set = new HashSet <Long>();
+        HashSet<Long> set1 = new HashSet <Long>();
         for (int i = 0; i < cc.size(); i++) {
             sessions.add(sessionRepository.getCourseCodeCountByCourseCode(cc.get(i)));
-            attendedSessions.add(sessionAttendanceRepository.getCourseCodeAttendedCountByCourseCodeAndUsername(cc.get(i),username));
+            set = sessionAttendanceRepository.getCourseCodeAttendedCountByCourseCodeAndUsername(cc.get(i),username);
+            set1 = odSessionRepository.findApprovedODSessionIDs(username, cc.get(i));
+            System.out.println("set = " + set);
+            set.addAll(set1);
+            int val = set.size();
+            attendedSessions.add(val);
         }
+        System.out.println("set1 = " + set1);
+
         GetStudentAttendanceResponse gs = GetStudentAttendanceResponse.builder().cc(cc).attendedSessions(attendedSessions).sessions(sessions).build();
         return gs;
     }

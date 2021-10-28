@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.List;
 @Builder
 @Data
@@ -13,5 +14,5 @@ import java.util.List;
 public class GetStudentAttendanceResponse {
     List<String> cc;
     List<Long> sessions;
-    List<Long> attendedSessions;
+    List<Integer> attendedSessions;
 }
