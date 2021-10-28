@@ -34,7 +34,6 @@ public class CourseYear {
     @Column(name = "course_year_id")
     private Long courseYearId;
     @ManyToOne(
-            cascade = CascadeType.REMOVE
     )
     @JoinColumn(
             name = "course_id",

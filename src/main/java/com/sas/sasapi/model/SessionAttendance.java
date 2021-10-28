@@ -34,7 +34,6 @@ public class SessionAttendance {
     @Column(name = "session_attendance_id")
     private Long sessionAttendanceId;
     @ManyToOne(
-            cascade = CascadeType.REMOVE
     )
     @JoinColumn(
             name = "session_id",
@@ -43,7 +42,7 @@ public class SessionAttendance {
     private Session session;
 
     @ManyToOne(
-            cascade = CascadeType.REMOVE
+//            cascade = CascadeType.REMOVE
     )
     @JoinColumn(
             name = "user_id",

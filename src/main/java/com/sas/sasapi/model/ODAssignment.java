@@ -31,7 +31,6 @@ public class ODAssignment {
     )
     private Long odAssignmentId;
     @ManyToOne(
-            cascade = CascadeType.REMOVE
     )
     @JoinColumn(
             name = "od_event_id",
@@ -39,7 +38,6 @@ public class ODAssignment {
     )
     private ODEvent odEvent;
     @ManyToOne(
-            cascade = CascadeType.REMOVE
     )
     @JoinColumn(
             name = "user_id",

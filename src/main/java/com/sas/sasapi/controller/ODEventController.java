@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/odevent")
 public class ODEventController {
@@ -71,10 +71,11 @@ public class ODEventController {
         return new ResponseEntity<>(updatedODEvent, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     public ResponseEntity<ODEvent> deleteODEvent(@RequestBody ODEvent odEvent){
 
         ODEvent odEventObj = odEventRepository.findByOdEventId(odEvent.getOdEventId()).orElseThrow(() -> new ResourceNotFound("Cannot find odEvent in db"));
+        System.out.println(odEventObj);
         odEventRepository.delete(odEventObj);
         return new ResponseEntity<>(odEventObj,HttpStatus.OK);
 
