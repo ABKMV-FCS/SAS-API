@@ -4,6 +4,7 @@ import com.sas.sasapi.model.CourseAllocation;
 import com.sas.sasapi.repository.CourseAllocationRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class CourseAllocationController {
         return courseAllocationRepository.save(courseAllocation);
     }
 
+    @Transactional
     @PutMapping("/update")
     public ResponseEntity<CourseAllocation> updateCourseYear(@RequestBody CourseAllocation courseAllocation){
         CourseAllocation courseAllocationObj = courseAllocationRepository.findByCourseAllocationId(courseAllocation.getCourseAllocationId()).orElseThrow(() -> new ResourceNotFound("Cannot find courseAllocation in db"));
@@ -43,6 +45,7 @@ public class CourseAllocationController {
         return new ResponseEntity<>(updatedCourseAllocation, HttpStatus.OK);
     }
 
+    @Transactional
     @DeleteMapping("/delete")
     public ResponseEntity<CourseAllocation> deleteCourseYear(@RequestBody CourseAllocation courseAllocation){
 

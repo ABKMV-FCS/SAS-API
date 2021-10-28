@@ -4,6 +4,7 @@ import com.sas.sasapi.model.FacultyAssignment;
 import com.sas.sasapi.repository.FacultyAssignmentRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class FacultyAssignmentController {
         return facultyAssignmentRepository.save(FacultyAssignment);
     }
 
+    @Transactional
     @PutMapping("/update")
     public ResponseEntity<FacultyAssignment> updateFacultyAssignment(@RequestBody FacultyAssignment odEvent){
         FacultyAssignment odEventObj = facultyAssignmentRepository.findByFacultyAssignmentId(odEvent.getFacultyAssignmentId()).orElseThrow(() -> new ResourceNotFound("Cannot find odEvent in db"));
@@ -40,6 +42,7 @@ public class FacultyAssignmentController {
         return new ResponseEntity<>(updatedFacultyAssignment, HttpStatus.OK);
     }
 
+    @Transactional
     @DeleteMapping("/delete")
     public ResponseEntity<FacultyAssignment> deleteFacultyAssignment(@RequestBody FacultyAssignment odEvent){
 

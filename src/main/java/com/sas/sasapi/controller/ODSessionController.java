@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,6 +40,7 @@ public class ODSessionController {
         return odSessionRepository.save(ODSession);
     }
 
+    @Transactional
     @PutMapping("/update")
     public ResponseEntity<ODSession> updateODSession(@RequestBody ODSession odSession){
         ODSession odSessionObj = odSessionRepository.findByOdSessionId(odSession.getOdSessionId()).orElseThrow(() -> new ResourceNotFound("Cannot find odSession in db"));
@@ -51,7 +53,7 @@ public class ODSessionController {
         return new ResponseEntity<>(updatedODSession, HttpStatus.OK);
     }
 
-
+    @Transactional
     @DeleteMapping("/delete")
     public ResponseEntity<ODSession> deleteODSession(@RequestBody ODSession odSession){
         ODSession odSessionObj = odSessionRepository.findByOdSessionId(odSession.getOdSessionId()).orElseThrow(() -> new ResourceNotFound("Cannot find odSession in db"));

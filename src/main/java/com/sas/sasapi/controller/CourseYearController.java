@@ -4,6 +4,7 @@ import com.sas.sasapi.model.CourseYear;
 import com.sas.sasapi.repository.CourseYearRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +30,7 @@ public class CourseYearController {
         return courseYearRepository.save(courseYear);
     }
 
+    @Transactional
     @PutMapping("/update")
     public ResponseEntity<CourseYear> updateCourseYear(@RequestBody CourseYear courseYear){
         CourseYear courseYearObj = courseYearRepository.findByCourseYearId(courseYear.getCourseYearId()).orElseThrow(() -> new ResourceNotFound("Cannot find courseYear in db"));

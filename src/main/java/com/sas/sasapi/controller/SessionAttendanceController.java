@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class SessionAttendanceController {
     public SessionAttendance createSessionAttendance(@RequestBody SessionAttendance SessionAttendance){
         return sessionAttendanceRepository.save(SessionAttendance);
     }
-
+@Transactional
     @PutMapping("/update")
     public ResponseEntity<SessionAttendance> updateSessionAttendance(@RequestBody SessionAttendance sessionAttendance){
         SessionAttendance sessionAttendanceObj = sessionAttendanceRepository.findBySessionAttendanceId(sessionAttendance.getSessionAttendanceId()).orElseThrow(() -> new ResourceNotFound("Cannot find sessionAttendance in db"));
@@ -45,7 +46,7 @@ public class SessionAttendanceController {
         SessionAttendance updatedSessionAttendance = sessionAttendanceRepository.save(sessionAttendanceObj);
         return new ResponseEntity<>(updatedSessionAttendance, HttpStatus.OK);
     }
-
+@Transactional
     @DeleteMapping("/delete")
     public ResponseEntity<SessionAttendance> deleteSessionAttendance(@RequestBody SessionAttendance sessionAttendance){
 

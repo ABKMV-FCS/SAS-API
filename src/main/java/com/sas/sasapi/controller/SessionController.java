@@ -41,17 +41,17 @@ public class SessionController {
         return sessionRepository.save(session);
     }
 
+    @Transactional
     @PostMapping("/updateSessionDetails")
     public ResponseEntity<List<SessionAttendance>> updateSessionDetails(@RequestBody UpdateSessionDetailsRequest updateSessionDetailsRequest){
         List<SessionAttendance> sl = sessionService.updateSessionDetails(updateSessionDetailsRequest);
         return new ResponseEntity<>(sl,HttpStatus.OK);
     }
-
+@Transactional
     @PostMapping("/deleteSessionDetails")
     public ResponseEntity<Session> deleteSessionDetails(@RequestBody DeleteSessionDetailsRequest deleteSessionDetailsRequest){
         return sessionService.deleteSessionDetails(deleteSessionDetailsRequest);
     }
-
 
     @GetMapping("/getUniqueDetails")
     public ResponseEntity<UniqueDetailsResponse> getUniqueDetails(){
@@ -95,6 +95,7 @@ public class SessionController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     };
 
+    @Transactional
     @PutMapping("/update")
     public ResponseEntity<Session> updateSession(@RequestBody Session session){
         Session sessionObj = sessionRepository.findBySessionId(session.getSessionId()).orElseThrow(() -> new ResourceNotFound("Cannot find session in db"));
@@ -107,7 +108,7 @@ public class SessionController {
         Session updatedSession = sessionRepository.save(sessionObj);
         return new ResponseEntity<>(updatedSession, HttpStatus.OK);
     }
-
+@Transactional
     @DeleteMapping("/delete")
     public ResponseEntity<Session> deleteSession(@RequestBody Session session){
 

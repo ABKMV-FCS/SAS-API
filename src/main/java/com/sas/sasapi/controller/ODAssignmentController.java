@@ -4,6 +4,7 @@ import com.sas.sasapi.model.ODAssignment;
 import com.sas.sasapi.repository.ODAssignmentRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class ODAssignmentController {
         return odAssignmentRepository.save(ODAssignment);
     }
 
+    @Transactional
     @PutMapping("/update")
     public ResponseEntity<ODAssignment> updateODAssignment(@RequestBody ODAssignment odAssignment){
         ODAssignment odAssignmentObj = odAssignmentRepository.findByOdAssignmentId(odAssignment.getOdAssignmentId()).orElseThrow(() -> new ResourceNotFound("Cannot find odAssignment in db"));

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class ODEventController {
         return odEventRepository.save(ODEvent);
     }
 
+    @Transactional
     @PostMapping("/updateODEventByUsername")
     public ResponseEntity<ODEvent> updateODEventByUsername(@RequestBody UpdateODEventRequest updateODEventRequest){
         UserDetails userDetails = (UserDetails) SecurityContextHolder. getContext(). getAuthentication().getPrincipal();
@@ -57,6 +59,7 @@ public class ODEventController {
         return new ResponseEntity<>(updatedODEvent, HttpStatus.OK);
     }
 
+    @Transactional
     @PutMapping("/update")
     public ResponseEntity<ODEvent> updateODEvent(@RequestBody ODEvent odEvent){
         ODEvent odEventObj = odEventRepository.findByOdEventId(odEvent.getOdEventId()).orElseThrow(() -> new ResourceNotFound("Cannot find odEvent in db"));
@@ -71,6 +74,7 @@ public class ODEventController {
         return new ResponseEntity<>(updatedODEvent, HttpStatus.OK);
     }
 
+    @Transactional
     @DeleteMapping("/delete")
     public ResponseEntity<ODEvent> deleteODEvent(@RequestBody ODEvent odEvent){
 

@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,6 +58,7 @@ public class UserController {
         return userRepository.save(user);
     }
 
+    @Transactional
     @PutMapping("/update")
     public ResponseEntity<User> updateUser(@RequestBody User user){
         User userObj = userRepository.findByUserId(user.getUserId()).orElseThrow(() -> new ResourceNotFound("Cannot find user in db"));
@@ -71,6 +73,7 @@ public class UserController {
         User updatedUser = userRepository.save(userObj);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
+    @Transactional
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestParam(value = "photo") MultipartFile file) {
@@ -86,6 +89,7 @@ public class UserController {
         }
         return new ResponseEntity<>(service.uploadFile(file), HttpStatus.OK);
     }
+    @Transactional
     @DeleteMapping("/delete/{fileName}")
     public ResponseEntity<String> deleteFile(@PathVariable String fileName) {
         return new ResponseEntity<>(service.deleteFile(fileName), HttpStatus.OK);

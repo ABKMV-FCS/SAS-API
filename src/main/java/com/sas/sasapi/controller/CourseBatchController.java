@@ -4,6 +4,7 @@ import com.sas.sasapi.model.CourseBatch;
 import com.sas.sasapi.repository.CourseBatchRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,6 +31,7 @@ public class CourseBatchController {
         return courseBatchRepository.save(courseBatch);
     }
 
+    @Transactional
     @PutMapping("/update")
     public ResponseEntity<CourseBatch> updateCourseYear(@RequestBody CourseBatch courseBatch){
         CourseBatch courseYearObj = courseBatchRepository.findByCourseBatchId(courseBatch.getCourseBatchId()).orElseThrow(() -> new ResourceNotFound("Cannot find courseBatch in db"));
@@ -43,6 +45,7 @@ public class CourseBatchController {
         return new ResponseEntity<>(updatedCourseYear, HttpStatus.OK);
     }
 
+    @Transactional
     @DeleteMapping("/delete")
     public ResponseEntity<CourseBatch> deleteCourseYear(@RequestBody CourseBatch courseBatch){
 
