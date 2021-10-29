@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.sas.sasapi.exception.ResourceNotFound;
 import com.sas.sasapi.model.User;
 import com.sas.sasapi.payload.request.PasswordRequest;
+import com.sas.sasapi.payload.request.UserDetailsUpdateRequest;
 import com.sas.sasapi.payload.request.UseridRequest;
 import com.sas.sasapi.payload.response.MessageResponse;
 import com.sas.sasapi.repository.UserRepository;
@@ -60,16 +61,11 @@ public class UserController {
 
     @Transactional
     @PutMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestBody User user){
+    public ResponseEntity<User> updateUser(@RequestBody UserDetailsUpdateRequest user){
         User userObj = userRepository.findByUserId(user.getUserId()).orElseThrow(() -> new ResourceNotFound("Cannot find user in db"));
-
-        userObj.setUsername(user.getUsername());
-        userObj.setPassword(user.getPassword());
         userObj.setName(user.getName());
-        userObj.setRoles(user.getRoles());
         userObj.setAddress(user.getAddress());
         userObj.setEmail(user.getEmail());
-
         User updatedUser = userRepository.save(userObj);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
