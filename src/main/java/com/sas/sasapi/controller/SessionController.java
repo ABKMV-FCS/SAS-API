@@ -79,6 +79,7 @@ public class SessionController {
 
     @PostMapping("/filter")
     public ResponseEntity<SessionFilterResponse> filterSessions(@RequestBody SessionFilter sessionFilter){
+        System.out.println(sessionFilter.getCourseCode()+sessionFilter.getYear()+sessionFilter.getSemester()+sessionFilter.getBatch());
     List<Session> s = sessionRepository.filterSessions(sessionFilter.getCourseCode(),sessionFilter.getYear(),sessionFilter.getSemester(),sessionFilter.getBatch());
         List<Long> sessionId = new ArrayList<>();
         List<Long> attendance = new ArrayList<>();
@@ -88,7 +89,7 @@ public class SessionController {
         for (int i=0;i<s.size();++i){
             sessionId.add(s.get(i).getSessionId());
             attendedCount = sessionRepository.getAttendedCount(sessionId.get(i));
-            attendance.add(attendedCount*100/totalCount);
+            attendance.add(attendedCount/totalCount);
         }
         SessionFilterResponse result = new SessionFilterResponse(attendance,s);
         System.out.println("result = " + result);
