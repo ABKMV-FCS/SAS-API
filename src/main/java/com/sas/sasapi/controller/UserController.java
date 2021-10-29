@@ -76,9 +76,7 @@ public class UserController {
     @Transactional
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam(value = "photo") MultipartFile file) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder. getContext(). getAuthentication().getPrincipal();
-        String username = userDetails. getUsername();
+    public ResponseEntity<String> uploadFile(@RequestParam(value = "photo") MultipartFile file, @RequestParam(value = "username") String username) {
         try {
             boolean doesItExists = s3Client.doesObjectExist(bucketName, username);
             if(doesItExists == true){
@@ -87,7 +85,7 @@ public class UserController {
         } catch (Exception error) {
             System.out.println(error);
         }
-        return new ResponseEntity<>(service.uploadFile(file), HttpStatus.OK);
+        return new ResponseEntity<>(service.uploadFile(file, username), HttpStatus.OK);
     }
     @Transactional
     @DeleteMapping("/delete/{fileName}")

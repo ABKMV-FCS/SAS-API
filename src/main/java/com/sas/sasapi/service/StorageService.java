@@ -27,10 +27,8 @@ public class StorageService {
     @Autowired
     private AmazonS3 s3Client;
 
-    public String uploadFile(MultipartFile file) {
+    public String uploadFile(MultipartFile file, String username) {
         File fileObj = convertMultiPartFileToFile(file);
-        UserDetails userDetails = (UserDetails) SecurityContextHolder. getContext(). getAuthentication().getPrincipal();
-        String username = userDetails. getUsername();
         s3Client.putObject(new PutObjectRequest(bucketName, username, fileObj));
         fileObj.delete();
         return "File uploaded : " + username;
