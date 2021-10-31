@@ -33,17 +33,19 @@ public class SessionService {
 
 
     public List<SessionAttendance> updateSessionDetails(UpdateSessionDetailsRequest updateSessionDetailsRequest){
-        Long count = sessionRepository.getSessionCount(updateSessionDetailsRequest.getSession().getSessionId());
-        if(count == 0){
-            Session s = sessionRepository.save(updateSessionDetailsRequest.getSession());;
+
+        Long count = sessionRepository.getSessionCount(updateSessionDetailsRequest.getSessionId());
+        if(count != 0){
+            sessionAttendanceRepository.deleteSessionAttendanceBySessionId(updateSessionDetailsRequest.getSessionId());
         }
         else{
-            sessionAttendanceRepository.deleteSessionAttendanceBySessionId(updateSessionDetailsRequest.getSession().getSessionId());
+            throw new ResourceNotFound("Cannot find session in db");
         }
 
         List<SessionAttendance> sl = new ArrayList<SessionAttendance>();
+        Session session = sessionRepository.FilterBySessionId(updateSessionDetailsRequest.getSessionId());
         for (int i = 0; i < updateSessionDetailsRequest.getUsers().size(); i++) {
-            SessionAttendance s = SessionAttendance.builder().session(updateSessionDetailsRequest.getSession()).user(updateSessionDetailsRequest.getUsers().get(i)).build();
+            SessionAttendance s = SessionAttendance.builder().session(session).user(updateSessionDetailsRequest.getUsers().get(i)).build();
             sl.add(s);
             sessionAttendanceRepository.save(s);
         }

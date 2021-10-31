@@ -1,5 +1,6 @@
 package com.sas.sasapi.controller;
 import com.sas.sasapi.exception.ResourceNotFound;
+import com.sas.sasapi.model.CourseBatch;
 import com.sas.sasapi.model.Session;
 import com.sas.sasapi.model.SessionAttendance;
 import com.sas.sasapi.model.User;
@@ -7,6 +8,7 @@ import com.sas.sasapi.payload.request.*;
 import com.sas.sasapi.payload.response.GetSessionDetailsResponse;
 import com.sas.sasapi.payload.response.SessionFilterResponse;
 import com.sas.sasapi.payload.response.UniqueDetailsResponse;
+import com.sas.sasapi.repository.CourseBatchRepository;
 import com.sas.sasapi.repository.SessionRepository;
 import com.sas.sasapi.service.SessionService;
 import org.springframework.data.jpa.repository.Modifying;
@@ -23,9 +25,12 @@ import java.util.*;
 public class SessionController {
     private final SessionRepository sessionRepository;
     private final SessionService sessionService;
-    public SessionController(SessionRepository sessionRepository,SessionService sessionService) {
+    private final CourseBatchRepository courseBatchRepository;
+    public SessionController(SessionRepository sessionRepository,SessionService sessionService,CourseBatchRepository courseBatchRepository) {
         this.sessionRepository = sessionRepository;
         this.sessionService = sessionService;
+        this.courseBatchRepository = courseBatchRepository;
+
     }
 
 
@@ -36,9 +41,13 @@ public class SessionController {
         return sessionRepository.findAll();
     }
 
+
+
     @PostMapping("/create")
-    public Session createSession(@RequestBody Session session){
-        return sessionRepository.save(session);
+    public Long createSession(@RequestBody CreateSessionRequest createSessionRequest){
+    CourseBatch courseBatch = courseBatchRepository.findByCourseCodeAndYearAndSemesterAndBatch(createSessionRequest.getCourseCode(),createSessionRequest.getYear(),createSessionRequest.getSemester(),createSessionRequest.getBatch());
+        Session session = Session.builder().courseBatch(courseBatch).fromDateTime(createSessionRequest.getFromDateTime()).toDateTime(createSessionRequest.getToDateTime()).build();
+        return sessionRepository.save(session).getSessionId();
     }
 
     @Transactional
