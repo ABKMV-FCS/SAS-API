@@ -44,4 +44,9 @@ public class ODAssignment {
             referencedColumnName = "user_id"
     )
     private User user;
+
+    public ODAssignment(ODEvent odEvent, User user) {
+        setOdEvent(odEvent);
+        setUser(user);
+    }
 }

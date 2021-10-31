@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.sas.sasapi.exception.ResourceNotFound;
 import com.sas.sasapi.model.User;
 import com.sas.sasapi.payload.request.PasswordRequest;
+import com.sas.sasapi.payload.request.UserDetailsUpdateRequest;
 import com.sas.sasapi.payload.request.UseridRequest;
 import com.sas.sasapi.payload.response.MessageResponse;
 import com.sas.sasapi.repository.UserRepository;
@@ -60,25 +61,18 @@ public class UserController {
 
     @Transactional
     @PutMapping("/update")
-    public ResponseEntity<User> updateUser(@RequestBody User user){
+    public ResponseEntity<User> updateUser(@RequestBody UserDetailsUpdateRequest user){
         User userObj = userRepository.findByUserId(user.getUserId()).orElseThrow(() -> new ResourceNotFound("Cannot find user in db"));
-
-        userObj.setUsername(user.getUsername());
-        userObj.setPassword(user.getPassword());
         userObj.setName(user.getName());
-        userObj.setRoles(user.getRoles());
         userObj.setAddress(user.getAddress());
         userObj.setEmail(user.getEmail());
-
         User updatedUser = userRepository.save(userObj);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);
     }
     @Transactional
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam(value = "photo") MultipartFile file) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder. getContext(). getAuthentication().getPrincipal();
-        String username = userDetails. getUsername();
+    public ResponseEntity<String> uploadFile(@RequestParam(value = "photo") MultipartFile file, @RequestParam(value = "username") String username) {
         try {
             boolean doesItExists = s3Client.doesObjectExist(bucketName, username);
             if(doesItExists == true){
@@ -87,7 +81,7 @@ public class UserController {
         } catch (Exception error) {
             System.out.println(error);
         }
-        return new ResponseEntity<>(service.uploadFile(file), HttpStatus.OK);
+        return new ResponseEntity<>(service.uploadFile(file, username), HttpStatus.OK);
     }
     @Transactional
     @DeleteMapping("/delete/{fileName}")
@@ -95,6 +89,7 @@ public class UserController {
         return new ResponseEntity<>(service.deleteFile(fileName), HttpStatus.OK);
     }
 
+    @Transactional
     @DeleteMapping("/delete")
     public ResponseEntity<User> deleteUser(@RequestBody User user){
 
