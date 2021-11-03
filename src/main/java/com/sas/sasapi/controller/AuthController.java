@@ -2,26 +2,25 @@ package com.sas.sasapi.controller;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 
+import com.google.firebase.auth.FirebaseAuthException;
 import com.sas.sasapi.payload.request.EmailRequest;
 import com.sas.sasapi.security.services.EmailService;
+import com.sas.sasapi.service.FirebaseAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.sas.sasapi.model.ERole;
 import com.sas.sasapi.model.Role;
@@ -59,13 +58,17 @@ public class AuthController {
     @Autowired
     private  EmailService emailService;
 
+    @Autowired
+    private FirebaseAdmin firebaseAdmin;
 
     @Value("${sas.app.fe_url}")
     private String url;
 
+    @Value("${sas.app.jwtExpirationMs}")
+    private int defaultJwtExpirationMs;
+
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -82,6 +85,34 @@ public class AuthController {
                 userDetails.getUsername(),
                 userDetails.getEmail(),
                 roles));
+    }
+
+    @PostMapping("/googlelogin")
+    public ResponseEntity<?> googleLogin(@RequestBody Map<String,Object> idTokenRequest){
+        System.out.println(idTokenRequest);
+        String email,idToken= (String) idTokenRequest.getOrDefault("idToken","");
+        try {
+            email=firebaseAdmin.ifAuthenticatedGetEmail(idToken);
+        } catch (FirebaseAuthException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+            User user=userRepository.findByEmail(email);
+            if(user==null){
+                throw new RuntimeException("Couldn't find user with such email!");
+            }
+            String jwt= jwtUtils.generateJwtTokenFromUsername(user.getUsername(),defaultJwtExpirationMs);
+            List<String> roles = user.getRoles().stream().map(s->String.valueOf(s)).collect(Collectors.toList());
+
+            return ResponseEntity.ok(new JwtResponse(jwt,
+                    user.getUserId(),
+                    user.getUsername(),
+                    user.getEmail(),
+                    roles));
+        }catch (Exception e){
+            return (ResponseEntity<?>) ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
+        }
     }
 
     @PostMapping("/signup")

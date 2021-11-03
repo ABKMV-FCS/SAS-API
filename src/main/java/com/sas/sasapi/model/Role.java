@@ -22,4 +22,8 @@ public class Role {
     @Setter
     private ERole name;
 
+    @Override
+    public String toString() {
+        return name.toString();
+    }
 }
