@@ -6,11 +6,16 @@ import lombok.Setter;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-public class EmailRequest {
+public class PasswordResetRequest {
 
     @NotBlank
     @Getter
     @Setter
     @Email
     private String email;
+
+    @NotBlank
+    @Getter
+    @Setter
+    private String captchaResponse;
 }

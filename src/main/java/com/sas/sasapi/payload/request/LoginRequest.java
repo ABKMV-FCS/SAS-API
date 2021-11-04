@@ -15,4 +15,9 @@ public class LoginRequest {
     @Getter
     @Setter
     private String password;
+
+    @NotBlank
+    @Getter
+    @Setter
+    private String captchaResponse;
 }

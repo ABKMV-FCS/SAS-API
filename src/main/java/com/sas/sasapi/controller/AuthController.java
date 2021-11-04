@@ -7,9 +7,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
+import com.amazonaws.services.simpleworkflow.flow.core.TryCatch;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.sas.sasapi.payload.request.EmailRequest;
+import com.sas.sasapi.payload.request.PasswordResetRequest;
 import com.sas.sasapi.security.services.EmailService;
+import com.sas.sasapi.service.CaptchaService;
 import com.sas.sasapi.service.FirebaseAdmin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +36,7 @@ import com.sas.sasapi.repository.UserRepository;
 import com.sas.sasapi.security.jwt.JwtUtils;
 import com.sas.sasapi.security.services.UserDetailsImpl;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -61,6 +64,9 @@ public class AuthController {
     @Autowired
     private FirebaseAdmin firebaseAdmin;
 
+    @Autowired
+    private CaptchaService captchaService;
+
     @Value("${sas.app.fe_url}")
     private String url;
 
@@ -68,7 +74,13 @@ public class AuthController {
     private int defaultJwtExpirationMs;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest, HttpServletRequest request) {
+        try {
+            captchaService.verifyCaptcha(loginRequest.getCaptchaResponse());
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 
@@ -170,17 +182,22 @@ public class AuthController {
     }
 
     @PostMapping("/forgotpassword")
-    public ResponseEntity<?> forgotPassword(@Valid @RequestBody EmailRequest emailRequest) {
-
+    public ResponseEntity<?> forgotPassword(@Valid @RequestBody PasswordResetRequest passwordResetRequest) {
+        try {
+            captchaService.verifyCaptcha(passwordResetRequest.getCaptchaResponse());
+        }
+        catch (Exception e){
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
+        }
 
         try {
-            User user=userRepository.findByEmail(emailRequest.getEmail());
+            User user=userRepository.findByEmail(passwordResetRequest.getEmail());
             if(user==null){
                 throw new RuntimeException("Couldn't find user with such email!");
             }
             String jwt= jwtUtils.generateJwtTokenFromUsername(user.getUsername(),600000);
 //            send jwt to email
-            emailService.sendMail(emailRequest.getEmail(), "SAS Application Password Reset", "Click on this url to reset your password: "+url+"/resetpassword?token="+jwt);
+            emailService.sendMail(passwordResetRequest.getEmail(), "SAS Application Password Reset", "Click on this url to reset your password: "+url+"/resetpassword?token="+jwt);
             return ResponseEntity.ok(new MessageResponse("Further instructions to reset password are sent to mail!"));
         }catch (Exception e){
             return (ResponseEntity<?>) ResponseEntity.badRequest().body(new MessageResponse(e.getMessage()));
