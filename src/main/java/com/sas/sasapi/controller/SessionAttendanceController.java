@@ -1,7 +1,9 @@
 package com.sas.sasapi.controller;
 import com.sas.sasapi.exception.ResourceNotFound;
+import com.sas.sasapi.model.Session;
 import com.sas.sasapi.model.SessionAttendance;
 import com.sas.sasapi.payload.response.GetStudentAttendanceResponse;
+import com.sas.sasapi.payload.response.GetStudentCourseWiseAttendanceResponse;
 import com.sas.sasapi.repository.SessionAttendanceRepository;
 import com.sas.sasapi.repository.SessionRepository;
 import com.sas.sasapi.service.SessionService;
@@ -12,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -28,6 +31,17 @@ public class SessionAttendanceController {
     @GetMapping("/all")
     public List<SessionAttendance> getAllSessionAttendances(){
         return sessionAttendanceRepository.findAll();
+    }
+    @PostMapping("/getStudentCourseWiseAttendance")
+    public ResponseEntity<GetStudentCourseWiseAttendanceResponse> getStudentCourseWiseAttendance(@RequestParam String courseCode){
+
+        UserDetails userDetails = (UserDetails) SecurityContextHolder. getContext(). getAuthentication().getPrincipal();
+        String username = userDetails. getUsername();
+        System.out.println("username = " + username);
+        HashSet<Session> coursesAttended = sessionAttendanceRepository.getCourseCodeAttendedSessionsByCourseCodeAndUsername(courseCode,username);
+        HashSet<Session> coursesNotAttended = sessionAttendanceRepository.getCourseCodeNotAttendedCountByCourseCodeAndUsername(courseCode,username);
+        GetStudentCourseWiseAttendanceResponse getStudentCourseWiseAttendanceResponse = GetStudentCourseWiseAttendanceResponse.builder().coursesAttended(coursesAttended).coursesNotAttended(coursesNotAttended).build();
+        return new ResponseEntity<>(getStudentCourseWiseAttendanceResponse, HttpStatus.OK);
     }
 
     @PostMapping("/create")

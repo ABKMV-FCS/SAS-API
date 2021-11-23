@@ -1,6 +1,8 @@
 package com.sas.sasapi.repository;
 
+import com.sas.sasapi.model.ODAssignment;
 import com.sas.sasapi.model.ODSession;
+import com.sas.sasapi.payload.response.GetStudentODListResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +26,8 @@ public interface ODSessionRepository extends JpaRepository<ODSession,String> {
     @Query("select o from ODSession o where o.odAssignment.user.username like ?1")
     List<ODSession> findByUsernameGetOdSessionApproval(String username);
 
+    @Query("select o.odAssignment.odEvent.eventName,o.odAssignment.odEvent.description,o.odAssignment.odEvent.fromDate,o.odAssignment.odEvent.toDate,o.odAssignment.odEvent.user.name,o.status from ODSession o where o.odAssignment.user.username like ?1")
+    List<Object> getStudentODList(String username);
+
+    List<ODSession> findByOdAssignment(ODAssignment odAssignment);
 }

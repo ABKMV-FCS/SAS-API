@@ -57,6 +57,7 @@ public class User {
     private String email;
     private String address;
     private String coordinates;
+    private String fcmToken;
 
     public User(String name, String username, String password, String email, String address, String coordinates) {
         this.name=name;

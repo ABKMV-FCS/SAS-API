@@ -20,4 +20,8 @@ public class LoginRequest {
     @Getter
     @Setter
     private String captchaResponse;
+
+    @Getter
+    @Setter
+    private String fcmToken;
 }

@@ -19,6 +19,10 @@ public interface ODAssignmentRepository extends JpaRepository<ODAssignment,Strin
     @Modifying
     void deleteAllByODEvent(ODEvent odEvent);
 
+    ODAssignment findByOdEvent_OdEventIdAndUser_Username(Long odEventId, String username);
+
+    @Query("select o from ODAssignment o")
+    List<ODAssignment> getAll();
 }
 
 

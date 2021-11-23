@@ -50,4 +50,8 @@ public class CourseAllocation {
     private CourseBatch courseBatch;
 
 
+    public CourseAllocation(CourseBatch courseBatchEvent, User user) {
+        this.courseBatch = courseBatchEvent;
+        this.user = user;
+    }
 }

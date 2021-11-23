@@ -37,6 +37,9 @@ public class CaptchaService {
         if(!responseSanityCheck(response)) {
             throw new RuntimeException("reCaptcha response contains invalid characters");
         }
+
+
+
         URI verifyUri = URI.create(String.format("https://www.google.com/recaptcha/api/siteverify?secret=%s&response=%s", captchaSecret, response));
         GoogleResponse googleResponse=this.restTemplate.getForObject(verifyUri, GoogleResponse.class);
 

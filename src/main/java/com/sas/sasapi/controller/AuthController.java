@@ -92,6 +92,7 @@ public class AuthController {
                 .map(item -> item.getAuthority())
                 .collect(Collectors.toList());
 
+        userRepository.updateFcmToken(loginRequest.getFcmToken(),loginRequest.getUsername());
         return ResponseEntity.ok(new JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
