@@ -30,4 +30,13 @@ public interface ODSessionRepository extends JpaRepository<ODSession,String> {
     List<Object> getStudentODList(String username);
 
     List<ODSession> findByOdAssignment(ODAssignment odAssignment);
+
+    @Query("select o from ODAssignment o where o.user.username = ?1")
+    List<ODAssignment> getODsAssignedToUsername(String username);
+
+    @Query("select f.courseBatch.courseBatchId from FacultyAssignment f where f.user.username = ?1")
+    List<Long> getCoursebatchIdsByFaculty(String username);
+
+    @Query("select o from ODSession o where o.session.courseBatch.courseBatchId = ?1")
+    List<ODSession> getODSessionsByCourseBatchID(Long courseBatchId);
 }
