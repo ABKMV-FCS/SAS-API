@@ -7,6 +7,7 @@ import com.sas.sasapi.model.User;
 import com.sas.sasapi.payload.request.BulkStudentListUpdateRequest;
 import com.sas.sasapi.repository.CourseAllocationRepository;
 import com.sas.sasapi.repository.UserRepository;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -51,7 +52,6 @@ public class CourseAllocationController {
         courseAllocationObj.setCourseAllocationId(courseAllocation.getCourseAllocationId());
         courseAllocationObj.setUser(courseAllocation.getUser());
 
-
         CourseAllocation updatedCourseAllocation = courseAllocationRepository.save(courseAllocationObj);
         return new ResponseEntity<>(updatedCourseAllocation, HttpStatus.OK);
     }
@@ -66,13 +66,19 @@ public class CourseAllocationController {
             int flag = 0;
             for (String username:(bulkStudentListUpdateRequest.getUsernames())
             ) {
-                if(username.equals(courseAllocationInDB.getUser().getUsername())){
+                if(username.equals(courseAllocationInDB.getUser().getUsername()) && courseAllocationInDB.getCourseBatch().equals(bulkStudentListUpdateRequest.getCourseBatchEvent())){
+                    flag=1;
+                    break;
+                }
+                if(courseAllocationInDB.getCourseBatch()!=bulkStudentListUpdateRequest.getCourseBatchEvent()){
                     flag=1;
                     break;
                 }
             }
             if(flag == 0){
-                CourseAllocation c = courseAllocationRepository.findByCourseBatch_CourseBatchIdAndUser_Name(bulkStudentListUpdateRequest.getCourseBatchEvent().getCourseBatchId(),courseAllocationInDB.getUser().getUsername());
+                System.out.println("inDB = " + inDB);
+                CourseAllocation c = courseAllocationRepository.findByCourseBatch_CourseBatchIdAndUser_Name(courseAllocationInDB.getCourseBatch().getCourseBatchId(),courseAllocationInDB.getUser().getUsername());
+                if (c == null) throw new ResourceNotFound("Course Allocation not found");
                 courseAllocationRepository.delete(c);
             }
         }
@@ -81,7 +87,7 @@ public class CourseAllocationController {
             int flag = 0;
             for (CourseAllocation courseAllocationInDB:(inDB)
                  ) {
-                if(username.equals(courseAllocationInDB.getUser().getUsername())){
+                if(username.equals(courseAllocationInDB.getUser().getUsername()) && courseAllocationInDB.getCourseBatch().equals(bulkStudentListUpdateRequest.getCourseBatchEvent())){
                     flag=1;
                     break;
                 }

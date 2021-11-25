@@ -90,7 +90,8 @@ public class SessionController {
     public ResponseEntity<SessionFilterResponse> filterSessions(@RequestBody SessionFilter sessionFilter){
         System.out.println(sessionFilter.getCourseCode()+sessionFilter.getYear()+sessionFilter.getSemester()+sessionFilter.getBatch());
     List<Session> s = sessionRepository.filterSessions(sessionFilter.getCourseCode(),sessionFilter.getYear(),sessionFilter.getSemester(),sessionFilter.getBatch());
-        List<Long> sessionId = new ArrayList<>();
+        System.out.println("s = " + s);
+    List<Long> sessionId = new ArrayList<>();
         List<Long> attendance = new ArrayList<>();
         Long attendedCount;
         Long courseBatchId = s.get(0).getCourseBatch().getCourseBatchId();
