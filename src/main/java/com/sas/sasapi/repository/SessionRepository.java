@@ -19,8 +19,6 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     @Query("select s from Session s where s.sessionId = ?1")
     Session FilterBySessionId(Long sessionID);
 
-
-
     @Query("select s from Session s where s.courseBatch.batch = ?4 and s.courseBatch.courseYear.year = ?2 and s.courseBatch.courseYear.semester = ?3 and s.courseBatch.courseYear.course.courseCode = ?1")
     List<Session> filterSessions(String courseCode, Long year, Long semester, String batch);
 

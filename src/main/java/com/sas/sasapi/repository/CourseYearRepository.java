@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface CourseYearRepository extends JpaRepository<CourseYear, Long> {
     Optional<CourseYear> findByCourseYearId(Long courseYearId);
-
+    CourseYear findByCourseAndSemesterAndYear(Course course, Long semester, Long year);
+    CourseYear findBySemesterAndYear(Long semester,Long year);
 }
