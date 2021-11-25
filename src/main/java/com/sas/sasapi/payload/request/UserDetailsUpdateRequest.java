@@ -16,4 +16,7 @@ public class UserDetailsUpdateRequest {
     @Getter
     @Setter
     private String address;
+    @Getter
+    @Setter
+    private String coordinates;
 }

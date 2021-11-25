@@ -54,10 +54,7 @@ public class UserController {
         return userRepository.findByUserId(useridRequest.getUserId()).orElseThrow(() -> new ResourceNotFound("Cannot find user in db"));
     }
 
-    @PostMapping("/create")
-    public User createUser(@RequestBody User user){
-        return userRepository.save(user);
-    }
+//    @PostMapping("/create")
 
     @Transactional
     @PutMapping("/update")
@@ -65,6 +62,7 @@ public class UserController {
         User userObj = userRepository.findByUserId(user.getUserId()).orElseThrow(() -> new ResourceNotFound("Cannot find user in db"));
         userObj.setName(user.getName());
         userObj.setAddress(user.getAddress());
+        userObj.setCoordinates(user.getCoordinates());
         userObj.setEmail(user.getEmail());
         User updatedUser = userRepository.save(userObj);
         return new ResponseEntity<>(updatedUser, HttpStatus.OK);

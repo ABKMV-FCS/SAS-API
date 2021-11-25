@@ -87,10 +87,11 @@ public class SessionController {
     }
 
     @PostMapping("/filter")
-    public ResponseEntity<SessionFilterResponse> filterSessions(@RequestBody SessionFilter sessionFilter){
+    public ResponseEntity<SessionFilterResponse> filterSessions(@RequestBody SessionFilter sessionFilter) throws Exception {
         System.out.println(sessionFilter.getCourseCode()+sessionFilter.getYear()+sessionFilter.getSemester()+sessionFilter.getBatch());
     List<Session> s = sessionRepository.filterSessions(sessionFilter.getCourseCode(),sessionFilter.getYear(),sessionFilter.getSemester(),sessionFilter.getBatch());
         System.out.println("s = " + s);
+        if(s.size()==0)throw new Exception("No such class found!");
     List<Long> sessionId = new ArrayList<>();
         List<Long> attendance = new ArrayList<>();
         Long attendedCount;
