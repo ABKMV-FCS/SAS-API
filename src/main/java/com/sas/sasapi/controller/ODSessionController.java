@@ -1,5 +1,6 @@
 package com.sas.sasapi.controller;
 import com.sas.sasapi.exception.ResourceNotFound;
+import com.sas.sasapi.model.ODAssignment;
 import com.sas.sasapi.model.ODSession;
 import com.sas.sasapi.model.User;
 import com.sas.sasapi.payload.response.GetStudentODListResponse;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,5 +99,29 @@ public class ODSessionController {
         ODSession odSessionObj = odSessionRepository.findByOdSessionId(odSession.getOdSessionId()).orElseThrow(() -> new ResourceNotFound("Cannot find odSession in db"));
         odSessionRepository.delete(odSessionObj);
         return new ResponseEntity<>(odSessionObj,HttpStatus.OK);
+    }
+
+    @GetMapping("/getODsAssignedToStudents")
+    public ResponseEntity<List<ODAssignment>> getODsAssignedToStudents(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder. getContext(). getAuthentication().getPrincipal();
+        String username = userDetails. getUsername();
+        List<ODAssignment> ods  = odSessionRepository.getODsAssignedToUsername(username);
+        return new ResponseEntity<>(ods,HttpStatus.OK);
+    }
+    @GetMapping("/getODsAssignedToFaculties")
+    public ResponseEntity<HashMap<Long,List<ODSession>>> getODsAssignedToFaculties(){
+        UserDetails userDetails = (UserDetails) SecurityContextHolder. getContext(). getAuthentication().getPrincipal();
+        String username = userDetails. getUsername();
+        List<Long> coursebatchIds  = odSessionRepository.getCoursebatchIdsByFaculty(username);
+        HashMap<Long,List<ODSession>> ODS = new HashMap<>();
+        for (int i = 0; i < coursebatchIds.size(); i++) {
+            List <ODSession> ls= ODS.get(coursebatchIds.get(i));
+            List <ODSession> ss = odSessionRepository.getODSessionsByCourseBatchID(coursebatchIds.get(i));
+            for (int j = 0; j < ss.size(); j++) {
+                ls.add(ss.get(j));
+            }
+            ODS.put(coursebatchIds.get(i),ls);
+        }
+        return new ResponseEntity<>(ODS,HttpStatus.OK);
     }
 }
