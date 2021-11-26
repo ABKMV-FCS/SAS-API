@@ -132,7 +132,7 @@ public class SessionController {
                 }
             }
             long duration  = parseDate(teamAttendanceUpdateRequest.getToDateTime()).getTime() - parseDate(teamAttendanceUpdateRequest.getFromDateTime()).getTime();
-            long threshold = TimeUnit.MILLISECONDS.toMinutes(duration);
+            double threshold = TimeUnit.MILLISECONDS.toMinutes(duration) * ((double) teamAttendanceUpdateRequest.getThreshold() / 100);
             System.out.println("threshold = " + threshold);
                 System.out.println("diff = " + diff);
             if (diff >= threshold) {
