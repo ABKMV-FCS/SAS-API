@@ -45,7 +45,6 @@ public class FacultyAssignmentController {
     @Transactional
     @DeleteMapping("/delete")
     public ResponseEntity<FacultyAssignment> deleteFacultyAssignment(@RequestBody FacultyAssignment odEvent){
-
         FacultyAssignment odEventObj = facultyAssignmentRepository.findByFacultyAssignmentId(odEvent.getFacultyAssignmentId()).orElseThrow(() -> new ResourceNotFound("Cannot find odEvent in db"));
         facultyAssignmentRepository.delete(odEventObj);
         return new ResponseEntity<>(odEventObj,HttpStatus.OK);

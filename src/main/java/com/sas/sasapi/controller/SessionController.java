@@ -174,21 +174,21 @@ public class SessionController {
         System.out.println(sessionFilter.getCourseCode()+sessionFilter.getYear()+sessionFilter.getSemester()+sessionFilter.getBatch());
     List<Session> s = sessionRepository.filterSessions(sessionFilter.getCourseCode(),sessionFilter.getYear(),sessionFilter.getSemester(),sessionFilter.getBatch());
         System.out.println("s = " + s);
-        if(s.size()==0)throw new Exception("No such class found!");
+//        if(s.size()==0)throw new Exception("No such class found!");
     List<Long> sessionId = new ArrayList<>();
-        List<Long> attendance = new ArrayList<>();
-        Long attendedCount;
-        Long courseBatchId = s.get(0).getCourseBatch().getCourseBatchId();
-        Long totalCount = sessionRepository.getAllCount(courseBatchId);
+        List<Double> attendance = new ArrayList<>();
+        Double attendedCount;
+        Long courseBatchId;
+        Double totalCount = 1.0;
+        if(s.size() != 0) {
+            courseBatchId = s.get(0).getCourseBatch().getCourseBatchId();
+            totalCount = (double) sessionRepository.getAllCount(courseBatchId);
+        }
         for (int i=0;i<s.size();++i){
             sessionId.add(s.get(i).getSessionId());
-            attendedCount = sessionRepository.getAttendedCount(sessionId.get(i));
-            if(totalCount == 0){
-                attendance.add((long)0);
-            }
-            else{
-                attendance.add(attendedCount/totalCount);
-            }
+            attendedCount = (double) sessionRepository.getAttendedCount(sessionId.get(i));
+            System.out.println(attendedCount + "   -----    " + totalCount);
+            attendance.add(attendedCount/totalCount);
         }
         SessionFilterResponse result = new SessionFilterResponse(attendance,s);
         System.out.println("result = " + result);

@@ -10,7 +10,7 @@ import java.util.List;
 public class SessionFilterResponse {
     @Getter
     @Setter
-    private List<Long> Attendance;
+    private List<Double> Attendance;
     @Getter
     @Setter
     private List<Session> Sessions;
