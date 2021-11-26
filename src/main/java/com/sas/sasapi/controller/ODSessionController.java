@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -109,18 +110,16 @@ public class ODSessionController {
         return new ResponseEntity<>(ods,HttpStatus.OK);
     }
     @GetMapping("/getODsAssignedToFaculties")
-    public ResponseEntity<HashMap<Long,List<ODSession>>> getODsAssignedToFaculties(){
+    public ResponseEntity<List<ODSession>> getODsAssignedToFaculties(){
         UserDetails userDetails = (UserDetails) SecurityContextHolder. getContext(). getAuthentication().getPrincipal();
         String username = userDetails. getUsername();
         List<Long> coursebatchIds  = odSessionRepository.getCoursebatchIdsByFaculty(username);
-        HashMap<Long,List<ODSession>> ODS = new HashMap<>();
+        List<ODSession> ODS = new ArrayList<>();
         for (int i = 0; i < coursebatchIds.size(); i++) {
-            List <ODSession> ls= ODS.get(coursebatchIds.get(i));
             List <ODSession> ss = odSessionRepository.getODSessionsByCourseBatchID(coursebatchIds.get(i));
             for (int j = 0; j < ss.size(); j++) {
-                ls.add(ss.get(j));
+                ODS.add(ss.get(j));
             }
-            ODS.put(coursebatchIds.get(i),ls);
         }
         return new ResponseEntity<>(ODS,HttpStatus.OK);
     }
