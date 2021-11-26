@@ -75,7 +75,7 @@ public class ODAssignmentController {
     @Transactional
     @PostMapping("/bulkODListUpdate")
     public ResponseEntity<?> bulkODListUpdate(@RequestBody BulkODUpdateRequest bulkODUpdateRequest){
-        List<ODAssignment> inDB = odAssignmentRepository.getAll();
+        List<ODAssignment> inDB = odAssignmentRepository.getAll(bulkODUpdateRequest.getOdEvent());
         for (ODAssignment ODAssignmentInDB:(inDB)
         ) {
             int flag = 0;

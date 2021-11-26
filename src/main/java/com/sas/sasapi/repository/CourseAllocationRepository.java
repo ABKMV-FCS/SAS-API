@@ -15,6 +15,6 @@ public interface CourseAllocationRepository extends JpaRepository<CourseAllocati
     @Query("select c from CourseAllocation c where c.courseBatch.courseBatchId=?1 and c.user.username=?2")
     CourseAllocation findByCourseBatch_CourseBatchIdAndUser_Name(Long CourseBatchId,String username);
 
-    @Query("select c from CourseAllocation c")
-    List<CourseAllocation> getAll();
+    @Query("select c from CourseAllocation c where c.courseBatch=?1")
+    List<CourseAllocation> getAll(CourseBatch courseBatch);
 }

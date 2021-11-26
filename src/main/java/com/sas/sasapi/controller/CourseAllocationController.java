@@ -60,17 +60,13 @@ public class CourseAllocationController {
     @PutMapping("/bulkStudentListUpdateRequest")
     public ResponseEntity<String> bulkStudentListUpdate(@RequestBody BulkStudentListUpdateRequest bulkStudentListUpdateRequest){
 
-        List<CourseAllocation> inDB = courseAllocationRepository.getAll();
+        List<CourseAllocation> inDB = courseAllocationRepository.getAll(bulkStudentListUpdateRequest.getCourseBatchEvent());
         for (CourseAllocation courseAllocationInDB:(inDB)
         ) {
             int flag = 0;
             for (String username:(bulkStudentListUpdateRequest.getUsernames())
             ) {
-                if(username.equals(courseAllocationInDB.getUser().getUsername()) && courseAllocationInDB.getCourseBatch().equals(bulkStudentListUpdateRequest.getCourseBatchEvent())){
-                    flag=1;
-                    break;
-                }
-                if(courseAllocationInDB.getCourseBatch()!=bulkStudentListUpdateRequest.getCourseBatchEvent()){
+                if(username.equals(courseAllocationInDB.getUser().getUsername())){
                     flag=1;
                     break;
                 }
@@ -87,7 +83,7 @@ public class CourseAllocationController {
             int flag = 0;
             for (CourseAllocation courseAllocationInDB:(inDB)
                  ) {
-                if(username.equals(courseAllocationInDB.getUser().getUsername()) && courseAllocationInDB.getCourseBatch().equals(bulkStudentListUpdateRequest.getCourseBatchEvent())){
+                if(username.equals(courseAllocationInDB.getUser().getUsername())){
                     flag=1;
                     break;
                 }

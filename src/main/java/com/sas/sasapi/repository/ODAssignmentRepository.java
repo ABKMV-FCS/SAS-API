@@ -21,8 +21,8 @@ public interface ODAssignmentRepository extends JpaRepository<ODAssignment,Strin
 
     ODAssignment findByOdEvent_OdEventIdAndUser_Username(Long odEventId, String username);
 
-    @Query("select o from ODAssignment o")
-    List<ODAssignment> getAll();
+    @Query("select o from ODAssignment o where o.odEvent=?1")
+    List<ODAssignment> getAll(ODEvent odEvent);
 }
 
 
